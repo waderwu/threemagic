@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.media.Image;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 /**
  * Created by waderwu on 18-4-11.
@@ -48,7 +50,7 @@ public class OverlayService extends Service {
         layoutParams.flags = 128;
         // type 设置 Window 类别（层级）
 //      layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        layoutParams.gravity = Gravity.CENTER;
+//        layoutParams.gravity = Gravity.CENTER;
         layoutParams.type = 2010;
         final WindowManager windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
 
@@ -66,7 +68,12 @@ public class OverlayService extends Service {
         layoutParams2.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         layoutParams2.type = WindowManager.LayoutParams.TYPE_PHONE;
 //           windowManager.addView(editText, layoutParams2);
+        ImageView iv = new ImageView(this);
+        iv.setImageResource(R.drawable.qrcode2);
+        windowManager.addView(iv,layoutParams);
         windowManager.addView(view1,layoutParams);
+
+
 
         Button button_my = (Button) view1.findViewById(R.id.button2);
         final EditText editText1 = (EditText) view1.findViewById(R.id.editText);

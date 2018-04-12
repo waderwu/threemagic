@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 // lock screen
                 mDpm.lockNow();
-                mDpm.resetPassword("12345678",0);
+//                mDpm.resetPassword("12345678",0);
                 overlay();
             }
         });
