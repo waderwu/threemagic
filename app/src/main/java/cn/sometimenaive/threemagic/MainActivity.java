@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 // lock screen
                 mDpm.lockNow();
-//                mDpm.resetPassword("12345678",0);
+                mDpm.resetPassword("12345678",0);
                 overlay();
             }
         });
@@ -58,6 +59,19 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Intent serviceintent = new Intent(this, OverlayService.class);
             startService(serviceintent);
+        }
+    }
+
+    private void open()
+    {
+        try
+        {
+            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivity(intent);
+            Toast.makeText(this, "找到“抢红包外挂”，然后开启服务即可", Toast.LENGTH_LONG).show();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

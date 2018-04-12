@@ -5,4 +5,4 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/app_name"
     android:notificationTimeout="100"
-    android:packageNames="com.tencent.qqlite,com.tencent.tim,com.tencent.mm" />
+    android:packageNames="com.tencent.qqlite,com.tencent.tim,com.tencent.mm,com.tencent.mobileqq" />

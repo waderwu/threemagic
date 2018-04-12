@@ -43,6 +43,7 @@ public class QqAcessService extends AccessibilityService{
     public void onAccessibilityEvent(final AccessibilityEvent event){
         int eventType = event.getEventType();
         Log.d("mylog","get envnet = "+eventType);
+
         switch (eventType){
             case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
                 Log.d("mylog","get notification event");
@@ -145,16 +146,18 @@ public class QqAcessService extends AccessibilityService{
 
     private boolean findEditText(AccessibilityNodeInfo rootNode,String content){
         int count = rootNode.getChildCount();
+        if (rootNode.getClassName().equals("android.widget.TextView")){
+            Log.d("mylog",rootNode.getText()+","+count+rootNode.getContentDescription());
 
-        Log.d("mylog","root class= "+ rootNode.getClassName()+","+rootNode.getText()+","+count);
+        }
         for (int i=0; i<count; i++){
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null){
                 Log.d("mylog","nodeinfo = null");
                 continue;
             }
-            Log.d("mylog", "class=" + nodeInfo.getClassName());
-            Log.e("mylog", "ds=" + nodeInfo.getContentDescription());
+//            Log.d("mylog", "class=" + nodeInfo.getClassName());
+//            Log.e("mylog", "ds=" + nodeInfo.getContentDescription());
 
             if(nodeInfo.getContentDescription() != null){
                 int nindex = nodeInfo.getContentDescription().toString().indexOf(name);

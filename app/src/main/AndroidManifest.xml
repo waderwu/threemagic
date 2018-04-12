@@ -47,17 +47,33 @@
 
         </service>
 
+        <!--<service-->
+            <!--android:name=".QqAcessService"-->
+            <!--android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.accessibilityservice.AccessibilityService"/>-->
+            <!--</intent-filter>-->
+            <!--<meta-data-->
+                <!--android:name="android.accessibilityservice"-->
+                <!--android:resource="@xml/access_config"/>-->
+        <!--</service>-->
+
+
         <service
-            android:name=".QqAcessService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:name=".LuckMoneyService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/access_config"/>
+                android:resource="@xml/luckmoney_service_config" />
         </service>
 
     </application>
