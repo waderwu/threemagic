@@ -29,6 +29,7 @@ public class LuckMoneyService extends AccessibilityService
     static final String TAG = "LuckMoneyService";
     static final String PACKAGENAME = "com.tencent.mm";
     private Handler handler = new Handler();
+    private Boolean have_opened = true;
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
@@ -40,6 +41,7 @@ public class LuckMoneyService extends AccessibilityService
                 for (CharSequence text : texts){
                     Log.d("text",text.toString());
                     if (text.toString().contains("[QQ红包]")){
+                        have_opened = false;
                         ClickNotification(event);
                     }
                 }
@@ -139,22 +141,27 @@ public class LuckMoneyService extends AccessibilityService
             // 领取最近发的红包
             for (int i = totalCount - 1; i >= 0; i--)
             {
-                // 如果为领取过该红包，则执行点击、
-                AccessibilityNodeInfo parent = qqList.get(i).getParent();
-                Log.i(TAG, "-->领取红包:" + parent);
-                if (parent != null)
+                // 如果未领取过该红包，则执行点击、
+                if (!have_opened)
                 {
-                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                }
-//                pressBackButton();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        back2Home();
+                    AccessibilityNodeInfo parent = qqList.get(i).getParent();
+                    Log.i(TAG, "-->领取红包:" + parent);
+                    if (parent != null)
+                    {
+                        parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     }
-                }, 1000);
+//                pressBackButton();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            back2Home();
+                        }
+                    }, 1000);
+                    have_opened = true;
 
-                break;
+                    break;
+                }
+
             }
 
         }

