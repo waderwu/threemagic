@@ -54,44 +54,60 @@ public class QqLogService extends AccessibilityService {
      */
 
     private void getQqLog(AccessibilityNodeInfo rootNode) {
-        if (rootNode != null) {
-            //获取所有聊天的线性布局
-            List<AccessibilityNodeInfo> listChatRecord = rootNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/o");
-            if(listChatRecord.size()==0){
-                return;
-            }
-            //获取最后一行聊天的线性布局（即是最新的那条消息）
-            AccessibilityNodeInfo finalNode = listChatRecord.get(listChatRecord.size() - 1);
-            //获取聊天对象list（其实只有size为1）
-            List<AccessibilityNodeInfo> imageName = finalNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/i_");
-            //获取聊天信息list（其实只有size为1）
-            List<AccessibilityNodeInfo> record = finalNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/ib");
-            if (imageName.size() != 0) {
-                if (record.size() == 0) {
-                    //判断当前这条消息是不是和上一条一样，防止重复
-                    if (!ChatRecord.equals("对方发的是图片或者表情")) {
-                        //获取聊天对象
-                        ChatName = imageName.get(0).getContentDescription().toString().replace("头像", "");
-                        //获取聊天信息
-                        ChatRecord = "对方发的是图片或者表情";
+        if (rootNode != null){
+            int count = rootNode.getChildCount();
+            for (int i=0; i<count; i++) {
+                AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+                if (nodeInfo == null) {
+                    Log.d("mylog", "nodeinfo = null");
+                    continue;
+                }
 
-                        Log.e("AAAA", ChatName + "：" + "对方发的是图片或者表情");
-                        Toast.makeText(this, ChatName + "：" + ChatRecord, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    //判断当前这条消息是不是和上一条一样，防止重复
-                    if (!ChatRecord.equals(record.get(0).getText().toString())) {
-                        //获取聊天对象
-                        ChatName = imageName.get(0).getContentDescription().toString().replace("头像", "");
-                        //获取聊天信息
-                        ChatRecord = record.get(0).getText().toString();
-
-                        Log.e("AAAA", ChatName + "：" + ChatRecord);
-                        Toast.makeText(this, ChatName + "：" + ChatRecord, Toast.LENGTH_SHORT).show();
-                    }
+                if(nodeInfo.getContentDescription() != null){
+                    String desc = nodeInfo.getContentDescription().toString();
+                    Log.e("mylog", "desc"+desc);
                 }
             }
+
         }
+//        if (rootNode != null) {
+//            //获取所有聊天的线性布局
+//            List<AccessibilityNodeInfo> listChatRecord = rootNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/o");
+//            if(listChatRecord.size()==0){
+//                return;
+//            }
+//            //获取最后一行聊天的线性布局（即是最新的那条消息）
+//            AccessibilityNodeInfo finalNode = listChatRecord.get(listChatRecord.size() - 1);
+//            //获取聊天对象list（其实只有size为1）
+//            List<AccessibilityNodeInfo> imageName = finalNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/i_");
+//            //获取聊天信息list（其实只有size为1）
+//            List<AccessibilityNodeInfo> record = finalNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/ib");
+//            if (imageName.size() != 0) {
+//                if (record.size() == 0) {
+//                    //判断当前这条消息是不是和上一条一样，防止重复
+//                    if (!ChatRecord.equals("对方发的是图片或者表情")) {
+//                        //获取聊天对象
+//                        ChatName = imageName.get(0).getContentDescription().toString().replace("头像", "");
+//                        //获取聊天信息
+//                        ChatRecord = "对方发的是图片或者表情";
+//
+//                        Log.e("AAAA", ChatName + "：" + "对方发的是图片或者表情");
+//                        Toast.makeText(this, ChatName + "：" + ChatRecord, Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    //判断当前这条消息是不是和上一条一样，防止重复
+//                    if (!ChatRecord.equals(record.get(0).getText().toString())) {
+//                        //获取聊天对象
+//                        ChatName = imageName.get(0).getContentDescription().toString().replace("头像", "");
+//                        //获取聊天信息
+//                        ChatRecord = record.get(0).getText().toString();
+//
+//                        Log.e("AAAA", ChatName + "：" + ChatRecord);
+//                        Toast.makeText(this, ChatName + "：" + ChatRecord, Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
